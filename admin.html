@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola de Administración - Andinitos</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    
+    <!-- Admin Styles -->
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-admin">
+            <img src="images/logo.png" alt="Andinitos Logo" onerror="this.src='images/logo.png'">
+            <h1 class="logo-title">Andinitos<span>.</span></h1>
+            <span class="logo-badge">Consola</span>
+        </div>
+
+        <div class="store-control">
+            <button class="sound-toggle" id="sound-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                Sonido Activo
+            </button>
+            
+            <div class="status-indicator">
+                <div class="indicator-dot" id="store-status-dot"></div>
+                <span id="store-status-text">Cargando estado...</span>
+            </div>
+            
+            <label class="switch">
+                <input type="checkbox" id="store-status-toggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </header>
+
+    <section class="store-schedule-panel">
+        <div class="store-schedule-header">
+            <h2>⚙️ Control de la tienda</h2>
+        </div>
+        <div class="store-schedule-grid">
+            <div class="store-setting-card">
+                <label class="setting-label" for="store-hours-force">Forzar horario manual</label>
+                <label class="admin-switch">
+                    <input type="checkbox" id="store-hours-force">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="store-setting-card">
+                <label class="setting-label" for="store-open-time">Hora de apertura</label>
+                <input type="time" id="store-open-time" class="admin-time-input" value="07:00">
+            </div>
+            <div class="store-setting-card">
+                <label class="setting-label" for="store-close-time">Hora de cierre</label>
+                <input type="time" id="store-close-time" class="admin-time-input" value="20:00">
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Console Container -->
+    <main class="dashboard-container">
+        
+        <!-- Metrics Row -->
+        <section class="metrics-row">
+            <div class="metric-card">
+                <span class="metric-label">💰 Ventas Hoy (Completadas)</span>
+                <span class="metric-value" id="val-ventas">$0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">🔔 Pedidos Nuevos</span>
+                <span class="metric-value" id="val-pendientes">0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">⏳ En Proceso / En Ruta</span>
+                <span class="metric-value" id="val-progreso">0</span>
+            </div>
+        </section>
+
+        <!-- Columns for Order Status -->
+        <section class="orders-columns">
+            
+            <!-- Column 1: Pendientes -->
+            <div class="column">
+                <div class="column-header">
+                    <h2 class="column-title">
+                        <span>📥</span> Pedidos Nuevos
+                    </h2>
+                    <span class="column-badge" id="badge-pendientes">0</span>
+                </div>
+                <div class="orders-list" id="list-pendientes">
+                    <!-- Dynamic orders injected here -->
+                    <div class="empty-column-state">Cargando pedidos...</div>
+                </div>
+            </div>
+
+            <!-- Column 2: Preparándose -->
+            <div class="column">
+                <div class="column-header">
+                    <h2 class="column-title">
+                        <span>👩‍🍳</span> En Preparación
+                    </h2>
+                    <span class="column-badge" id="badge-preparando">0</span>
+                </div>
+                <div class="orders-list" id="list-preparando">
+                    <!-- Dynamic orders injected here -->
+                    <div class="empty-column-state">Cargando pedidos...</div>
+                </div>
+            </div>
+
+            <!-- Column 3: Domicilio / Para Recoger -->
+            <div class="column">
+                <div class="column-header">
+                    <h2 class="column-title">
+                        <span>🛵</span> Listo / En Ruta
+                    </h2>
+                    <span class="column-badge" id="badge-despachados">0</span>
+                </div>
+                <div class="orders-list" id="list-despachados">
+                    <!-- Dynamic orders injected here -->
+                    <div class="empty-column-state">Cargando pedidos...</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Product Inventory Section -->
+        <section class="inventory-section">
+            <h2 style="font-family: var(--font-serif); font-size: 24px; font-weight: 700; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid rgba(42, 29, 23, 0.08); color: var(--primary);">
+                📦 Gestión de Catálogo de Productos
+            </h2>
+            <div id="admin-products-container">
+                <p style="text-align: center; color: var(--text-muted);">Cargando catálogo...</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Firebase SDK (Compat v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <!-- Core Admin Logic -->
+    <script src="js/admin.js"></script>
+</body>
+</html>
