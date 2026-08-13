@@ -256,15 +256,15 @@ let storeSettings = {
 let cart = [];
 let activeCategory = "todos";
 
-// Firebase Configuración (Inicialización Vacía para que el usuario ingrese la suya si recrea)
+// Firebase Configuración
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAUMS-ZPgKdxlYriinF_WSM80VYu2Ct2Yw",
+    authDomain: "andinitos.firebaseapp.com",
+    databaseURL: "https://andinitos-default-rtdb.firebaseio.com",
+    projectId: "andinitos",
+    storageBucket: "andinitos.firebasestorage.app",
+    messagingSenderId: "783238716577",
+    appId: "1:783238716577:web:d8e9496a90f19a666424e0"
 };
 
 let db = null;
@@ -278,7 +278,7 @@ function initDatabase() {
             db = firebase.database();
             isFirebaseConnected = true;
             console.log("AndinitosDB: Conectado a Firebase Realtime Database.");
-            
+
             // Escuchar cambios de estado de la tienda (Abierto/Cerrado por administrador)
             db.ref("storeSettings/status").on("value", (snapshot) => {
                 const status = snapshot.val();
@@ -528,7 +528,7 @@ function updateStoreStatusUI() {
     const isOpen = checkStoreOpen();
     const dot = document.getElementById("status-dot");
     const text = document.getElementById("status-text");
-    
+
     if (isOpen) {
         if (dot) dot.className = "status-dot";
         if (text) text.innerText = "Abierto Ahora";
@@ -691,7 +691,7 @@ function renderProducts() {
 }
 
 // Alternar apertura de acordeón
-window.toggleAccordion = function(catKey) {
+window.toggleAccordion = function (catKey) {
     const accordion = document.getElementById(`accordion-${catKey}`);
     if (accordion) {
         accordion.classList.toggle("open");
@@ -699,11 +699,11 @@ window.toggleAccordion = function(catKey) {
 };
 
 // Abrir acordeón y hacer scroll suave (Para enlaces rápidos)
-window.openAccordion = function(catKey) {
+window.openAccordion = function (catKey) {
     const accordion = document.getElementById(`accordion-${catKey}`);
     if (accordion) {
         accordion.classList.add("open");
-        
+
         // Esperar un instante para que el navegador inicie el scroll
         setTimeout(() => {
             accordion.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -712,7 +712,7 @@ window.openAccordion = function(catKey) {
 };
 
 // Incrementar cantidad en la tarjeta del producto
-window.incrementCardQty = function(productId) {
+window.incrementCardQty = function (productId) {
     const span = document.getElementById(`card-qty-${productId}`);
     if (span) {
         let qty = parseInt(span.innerText) || 1;
@@ -722,7 +722,7 @@ window.incrementCardQty = function(productId) {
 };
 
 // Disminuir cantidad en la tarjeta del producto
-window.decrementCardQty = function(productId) {
+window.decrementCardQty = function (productId) {
     const span = document.getElementById(`card-qty-${productId}`);
     if (span) {
         let qty = parseInt(span.innerText) || 1;
@@ -734,7 +734,7 @@ window.decrementCardQty = function(productId) {
 };
 
 // Agregar producto al carrito leyendo la cantidad seleccionada en su tarjeta
-window.addCardToCart = function(productId, category) {
+window.addCardToCart = function (productId, category) {
     const span = document.getElementById(`card-qty-${productId}`);
     const qtyToAdd = span ? (parseInt(span.innerText) || 1) : 1;
 
@@ -801,7 +801,7 @@ let currentComboQty = 1;
 let currentJugoId = null;
 
 // Abrir el modal de personalización de combos
-window.openComboModal = function(productId, category, qty) {
+window.openComboModal = function (productId, category, qty) {
     const product = (menuDatabase[category] || []).find(p => p && p.id === productId);
     if (product && product.available === false) {
         alert("Este combo no está disponible ahora mismo.");
@@ -827,7 +827,7 @@ window.openComboModal = function(productId, category, qty) {
     if (productId === "C1") {
         titleEl.innerText = "Personaliza tu Combo Trío Dulzura";
         descEl.innerText = "Este combo incluye 2 Palitos de Queso y 1 Malteada. Selecciona el sabor de tu malteada:";
-        
+
         const group = document.createElement("div");
         group.className = "combo-option-group";
         group.innerHTML = `
@@ -891,7 +891,7 @@ window.openComboModal = function(productId, category, qty) {
 };
 
 // Cerrar el modal de combos
-window.closeComboModal = function() {
+window.closeComboModal = function () {
     const modal = document.getElementById("combo-modal");
     if (modal) modal.classList.remove("open");
     currentComboId = null;
@@ -899,7 +899,7 @@ window.closeComboModal = function() {
 };
 
 // Abrir el modal de personalización de jugos
-window.openJugoModal = function(productId) {
+window.openJugoModal = function (productId) {
     currentJugoId = productId;
 
     // Buscar el producto en jugos_naturales
@@ -923,14 +923,14 @@ window.openJugoModal = function(productId) {
 };
 
 // Cerrar el modal de jugos
-window.closeJugoModal = function() {
+window.closeJugoModal = function () {
     const modal = document.getElementById("jugo-modal");
     if (modal) modal.classList.remove("open");
     currentJugoId = null;
 };
 
 // Añadir producto al carrito
-window.addToCart = function(productId, category) {
+window.addToCart = function (productId, category) {
     // Si la tienda está cerrada, advertir pero permitir preparar pedido
     const isOpen = checkStoreOpen();
     if (!isOpen) {
@@ -947,7 +947,7 @@ window.addToCart = function(productId, category) {
         const base = confirm("¿Deseas tu jugo en LECHE?\n(Aceptar = Leche / Cancelar = Agua)");
         const baseSelected = base ? "en Leche" : "en Agua";
         const customId = `${productId}-${baseSelected}`;
-        
+
         const existingJugo = cart.find(item => item.customId === customId);
         if (existingJugo) {
             existingJugo.quantity++;
@@ -978,7 +978,7 @@ window.addToCart = function(productId, category) {
 };
 
 // Modificar cantidad
-window.updateQty = function(customId, delta) {
+window.updateQty = function (customId, delta) {
     const item = cart.find(item => item.customId === customId);
     if (!item) return;
 
@@ -986,13 +986,13 @@ window.updateQty = function(customId, delta) {
     if (item.quantity <= 0) {
         cart = cart.filter(item => item.customId !== customId);
     }
-    
+
     saveCart();
     renderCart();
 };
 
 // Eliminar ítem
-window.removeCartItem = function(customId) {
+window.removeCartItem = function (customId) {
     cart = cart.filter(item => item.customId !== customId);
     saveCart();
     renderCart();
@@ -1039,9 +1039,9 @@ function renderCart() {
     const cartItemsContainer = document.getElementById("cart-items");
     const cartCountBadge = document.getElementById("cart-badge");
     const cartTotalText = document.getElementById("cart-total-price");
-    
+
     if (!cartItemsContainer) return;
-    
+
     // Contar total de ítems
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     if (cartCountBadge) {
@@ -1204,7 +1204,7 @@ function setupEventListeners() {
     if (checkoutForm) {
         checkoutForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            
+
             if (cart.length === 0) {
                 alert("Tu carrito está vacío. Agrega productos antes de realizar el pedido.");
                 return;
@@ -1260,9 +1260,9 @@ function setupEventListeners() {
             cart.forEach(item => {
                 const itemTotal = item.product.price * item.quantity;
                 subtotal += itemTotal;
-                
+
                 const itemPriceFormatted = formatCOP(item.product.price);
-                
+
                 message += `• ${item.quantity}x ${item.product.name} ${item.notes ? `(${item.notes})` : ""} - c/u ${itemPriceFormatted}\n`;
             });
 
@@ -1300,7 +1300,7 @@ function setupEventListeners() {
 
             // Codificar y redireccionar
             const url = `https://api.whatsapp.com/send?phone=${STORE_WHATSAPP}&text=${encodeURIComponent(message)}`;
-            
+
             // Si Firebase está conectado, guardar pedido en la base de datos para la vista del administrador
             if (isFirebaseConnected && db) {
                 const newOrderRef = db.ref("orders").push();
@@ -1336,7 +1336,7 @@ function setupEventListeners() {
             saveCart();
             renderCart();
             closeCartSidebar();
-            
+
             // Abrir WhatsApp en otra pestaña
             window.open(url, "_blank");
         });
@@ -1477,7 +1477,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCart();
     setupThemeProposalButtons();
     setupEventListeners();
-    
+
     // Intervalo para verificar el estado de la tienda cada minuto
     setInterval(updateStoreStatusUI, 60000);
 });
@@ -1488,13 +1488,13 @@ window.addEventListener("storage", (e) => {
         try {
             menuDatabase = JSON.parse(e.newValue);
             renderProducts();
-        } catch (err) {}
+        } catch (err) { }
     }
     if (e.key === "andinitos_mock_status") {
         try {
             const status = JSON.parse(e.newValue);
             storeOpenOverride = status.isOpen;
             updateStoreStatusUI();
-        } catch (err) {}
+        } catch (err) { }
     }
 });

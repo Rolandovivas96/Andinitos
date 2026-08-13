@@ -6,13 +6,13 @@
 
 // Configuración de Firebase (Debe coincidir con script.js)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAUMS-ZPgKdxlYriinF_WSM80VYu2Ct2Yw",
+    authDomain: "andinitos.firebaseapp.com",
+    databaseURL: "https://andinitos-default-rtdb.firebaseio.com",
+    projectId: "andinitos",
+    storageBucket: "andinitos.firebasestorage.app",
+    messagingSenderId: "783238716577",
+    appId: "1:783238716577:web:d8e9496a90f19a666424e0"
 };
 
 let db = null;
