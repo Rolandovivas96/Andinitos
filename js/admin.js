@@ -28,6 +28,9 @@ let soundEnabled = true;
 let audioContext = null;
 let lastOrdersSignature = "";
 
+// Orden oficial de categorías
+const CATEGORY_ORDER = ['pasteles', 'pasteles_al_barril', 'jugos_naturales', 'malteadas', 'combos'];
+
 // Base de Datos de Productos (Coincide con script.js)
 let menuDatabase = {
     pasteles: [
@@ -139,50 +142,6 @@ let menuDatabase = {
             image: "images/PIERNA DE CERDO AL BARRIL Y QUESO.png"
         }
     ],
-    malteadas: [
-        {
-            id: "M1",
-            name: "Malteada de Cocosette",
-            price: 14000,
-            desc: "Cremosa malteada preparada con galleta Cocosette original y coco rallado.",
-            image: "images/MALETADA DE COCOSSETTE.png"
-        },
-        {
-            id: "M2",
-            name: "Malteada de Arequipe",
-            price: 13000,
-            desc: "Deliciosa combinación de helado premium y arequipe tradicional colombiano.",
-            image: "images/MALTEADA DE AREQUIPE.png"
-        },
-        {
-            id: "M3",
-            name: "Malteada de Frutos Rojos",
-            price: 13500,
-            desc: "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.",
-            image: "images/MALTEADA DE FRUTOS ROJOS.png"
-        },
-        {
-            id: "M4",
-            name: "Malteada de Milo",
-            price: 12500,
-            desc: "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.",
-            image: "images/MALTEADA DE MILO.jpeg"
-        },
-        {
-            id: "M5",
-            name: "Malteada de Oreo",
-            price: 13500,
-            desc: "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.",
-            image: "images/MALTEADA DE OREO.png"
-        },
-        {
-            id: "M6",
-            name: "Malteada de Toddy",
-            price: 13000,
-            desc: "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.",
-            image: "images/MALTEADA DE TODDY.jpeg"
-        }
-    ],
     jugos_naturales: [
         {
             id: "J1",
@@ -246,6 +205,50 @@ let menuDatabase = {
             priceLeche: 11000,
             desc: "Mango fresco del trópico colombiano, dulce y con cuerpo cremoso.",
             image: "images/JUGOS.png"
+        }
+    ],
+    malteadas: [
+        {
+            id: "M1",
+            name: "Malteada de Cocosette",
+            price: 14000,
+            desc: "Cremosa malteada preparada con galleta Cocosette original y coco rallado.",
+            image: "images/MALETADA DE COCOSSETTE.png"
+        },
+        {
+            id: "M2",
+            name: "Malteada de Arequipe",
+            price: 13000,
+            desc: "Deliciosa combinación de helado premium y arequipe tradicional colombiano.",
+            image: "images/MALTEADA DE AREQUIPE.png"
+        },
+        {
+            id: "M3",
+            name: "Malteada de Frutos Rojos",
+            price: 13500,
+            desc: "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.",
+            image: "images/MALTEADA DE FRUTOS ROJOS.png"
+        },
+        {
+            id: "M4",
+            name: "Malteada de Milo",
+            price: 12500,
+            desc: "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.",
+            image: "images/MALTEADA DE MILO.jpeg"
+        },
+        {
+            id: "M5",
+            name: "Malteada de Oreo",
+            price: 13500,
+            desc: "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.",
+            image: "images/MALTEADA DE OREO.png"
+        },
+        {
+            id: "M6",
+            name: "Malteada de Toddy",
+            price: 13000,
+            desc: "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.",
+            image: "images/MALTEADA DE TODDY.jpeg"
         }
     ],
     combos: [
@@ -1138,7 +1141,7 @@ function renderAdminProducts() {
     if (!container) return;
     container.innerHTML = "";
 
-    Object.keys(menuDatabase).forEach(catKey => {
+    CATEGORY_ORDER.forEach(catKey => {
         const catLabel = catKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
         const products = Array.isArray(menuDatabase[catKey]) ? menuDatabase[catKey] : [];
 
