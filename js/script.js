@@ -1236,7 +1236,7 @@ function setupEventListeners() {
                 return;
             }
 
-            if (!address && zoneValue !== "recoger") {
+            if (!address && zoneValue !== "recoger" && zoneValue !== "fuera-envigado") {
                 alert("Por favor ingresa la dirección completa.");
                 return;
             }
