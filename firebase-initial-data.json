@@ -1,0 +1,56 @@
+{
+  "products": {
+    "pasteles": [
+      { "id": "P1", "name": "Pastel de Carne Molida", "price": 7500, "desc": "Delicioso pastel tradicional relleno de carne molida seleccionada y sazonada.", "image": "images/CARNE MOLIDA.png", "available": true },
+      { "id": "P2", "name": "Pastel de Jamón y Queso", "price": 7000, "desc": "Clásica combinación de jamón premium y queso mozzarella derretido.", "image": "images/JAMON Y QUESI.png", "available": true },
+      { "id": "P3", "name": "Pastel de Pollo", "price": 7500, "desc": "Pastel relleno de jugosa pechuga de pollo desmechada y guisada con amor.", "image": "images/POLLO.png", "available": true },
+      { "id": "P4", "name": "Palito de Queso", "price": 6500, "desc": "Deditos de queso crujientes por fuera y súper derretidos por dentro.", "image": "images/PALITO DE QUESO.png", "available": true },
+      { "id": "P5", "name": "Pastel de Salchicha y Queso", "price": 7000, "desc": "Salchicha seleccionada acompañada de queso mozzarella hilado.", "image": "images/SALCHICHA Y QUESO.png", "available": true },
+      { "id": "P6", "name": "Pastel de Queso", "price": 6500, "desc": "Sabor tradicional y simple con abundante queso campesino de la mejor calidad.", "image": "images/QUESO.jpeg", "available": true },
+      { "id": "P7", "name": "Pastel de Guayaba y Queso", "price": 7000, "desc": "La perfecta combinación dulce y salada de bocadillo de guayaba y queso fundido.", "image": "images/GUAYABA Y QUESO.png", "available": true },
+      { "id": "P8", "name": "Pastel Hawaiano", "price": 7500, "desc": "Relleno tropical de jamón, queso mozzarella y dulces trozos de piña calada.", "image": "images/HAWAIANO.png", "available": true },
+      { "id": "PP1", "name": "Pastel de Arroz con Carne", "price": 9000, "desc": "El tradicional pastel andino con arroz aliñado y carne guisada.", "image": "images/ARROZ CON CARNE.png", "available": true },
+      { "id": "PP3", "name": "Pastel de Chicharrón y Queso", "price": 10000, "desc": "Pastel relleno de chicharrón crocante sazonado y queso derretido.", "image": "images/CHICHARRON Y QUESO.png", "available": true },
+      { "id": "PP5", "name": "Pastel Pollo Champiñones", "price": 9000, "desc": "Pollo desmechado bañado en una salsa cremosa de champiñones seleccionados.", "image": "images/POLLO CHAMPIÑONES.png", "available": true },
+      { "id": "PP6", "name": "Pastel Pollo Tocineta", "price": 9000, "desc": "Pechuga de pollo desmechada con trozos crujientes de tocineta ahumada y queso.", "image": "images/POLLO TOCINETA.png", "available": true },
+      { "id": "PP7", "name": "Pastel Ranchero", "price": 9500, "desc": "Relleno especial de chorizo picado, maíz dulce, salchicha y queso fundido.", "image": "images/RANCHERO.png", "available": true }
+    ],
+    "pasteles_al_barril": [
+      { "id": "PP2", "name": "Pastel de Chicharrón al Barril y Queso", "price": 11000, "desc": "Exclusivo chicharrón crujiente preparado al barril con queso mozzarella fundido.", "image": "images/CHICHARRON AL BARRIL Y QUESO.png", "available": true },
+      { "id": "PP4", "name": "Pastel de Pierna de Cerdo al Barril y Queso", "price": 11000, "desc": "Suave pierna de cerdo ahumada al barril combinada con queso fundido.", "image": "images/PIERNA DE CERDO AL BARRIL Y QUESO.png", "available": true }
+    ],
+    "bebidas": [
+      { "id": "B1", "name": "Milo de 16oz", "price": 11000, "desc": "Refrescante y fría bebida achocolatada Milo de 16oz.", "image": "images/MALTEADA DE MILO.jpeg", "available": true },
+      { "id": "B2", "name": "Toddy de 16oz", "price": 11000, "desc": "Refrescante y fría bebida achocolatada Toddy de 16oz.", "image": "images/MALTEADA DE TODDY.jpeg", "available": true }
+    ],
+    "malteadas": [
+      { "id": "M1", "name": "Malteada de Cocosette", "price": 14000, "desc": "Cremosa malteada preparada con galleta Cocosette original y coco rallado.", "image": "images/MALETADA DE COCOSSETTE.png", "available": true },
+      { "id": "M2", "name": "Malteada de Arequipe", "price": 13000, "desc": "Deliciosa combinación de helado premium y arequipe tradicional colombiano.", "image": "images/MALTEADA DE AREQUIPE.png", "available": true },
+      { "id": "M3", "name": "Malteada de Frutos Rojos", "price": 13500, "desc": "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.", "image": "images/MALTEADA DE FRUTOS ROJOS.png", "available": true },
+      { "id": "M4", "name": "Malteada de Milo", "price": 12500, "desc": "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.", "image": "images/MALTEADA DE MILO.jpeg", "available": true },
+      { "id": "M5", "name": "Malteada de Oreo", "price": 13500, "desc": "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.", "image": "images/MALTEADA DE OREO.png", "available": true },
+      { "id": "M6", "name": "Malteada de Toddy", "price": 13000, "desc": "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.", "image": "images/MALTEADA DE TODDY.jpeg", "available": true }
+    ],
+    "jugos_naturales": [
+      { "id": "J1", "name": "Jugo de Mora", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Natural de mora, dulce y con el sabor típico de los frutos andinos.", "image": "images/JUGOS.png", "available": true },
+      { "id": "J2", "name": "Jugo de Maracuyá", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Tropical y refrescante, el maracuyá en su punto justo de acidez.", "image": "images/JUGOS.png", "available": true },
+      { "id": "J3", "name": "Jugo de Fresa", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Fresas frescas licuadas al momento para un sabor inigualable.", "image": "images/JUGOS.png", "available": true },
+      { "id": "J4", "name": "Jugo de Guánabana", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Cremoso y aromático, la guánabana en todo su esplendor tropical.", "image": "images/JUGOS.png", "available": true },
+      { "id": "J5", "name": "Frutos Amarillos", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Mezcla especial de frutas amarillas de temporada, llenas de vitaminas.", "image": "images/JUGOS.png", "available": true },
+      { "id": "J6", "name": "Frutos Rojos", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Combinación de mora, fresa y frutas rojas, antioxidante y delicioso.", "image": "images/JUGOS.png", "available": true },
+      { "id": "J7", "name": "Jugo de Mango", "isJugo": true, "priceAgua": 9000, "priceLeche": 11000, "desc": "Mango fresco del trópico colombiano, dulce y con cuerpo cremoso.", "image": "images/JUGOS.png", "available": true }
+    ],
+    "combos": [
+      { "id": "C1", "name": "Combo Trío Dulzura", "price": 21000, "desc": "2 palitos de queso y 1 malteada a elección del cliente.", "image": "images/TRIO DULZURA.png", "available": true },
+      { "id": "C2", "name": "Combo Trío Sensación", "price": 23000, "desc": "2 pasteles (hasta $7.500 c/u) y 1 malteada a elección del cliente.", "image": "images/TRIO SENSACION.png", "available": true }
+    ]
+  },
+  "storeSettings": {
+    "status": {
+      "isOpen": true,
+      "useManualSchedule": false,
+      "openHour": "07:00",
+      "closeHour": "20:00"
+    }
+  }
+}
