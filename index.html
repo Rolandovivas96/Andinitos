@@ -81,11 +81,7 @@
         </div>
     </footer>
 
-    <!-- Store Status Widget (Bottom Left) -->
-    <div class="store-status-banner">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">Verificando horario...</span>
-    </div>
+
 
     <!-- Sliding Sidebar Shopping Cart -->
     <div class="cart-overlay" id="cart-overlay"></div>
@@ -127,6 +123,7 @@
                     <label for="form-zone" style="display:block; margin-bottom:6px; font-size:12px; font-weight:700; color: var(--on-surface-variant);">ZONA DE ENVÍO / BARRIO *</label>
                     <select class="form-input" id="form-zone" required>
                         <option value="">Selecciona tu zona...</option>
+                        <option value="fuera-envigado" data-price="0">📍 Fuera de Envigado - Acordar con el restaurante</option>
                         <option value="recoger" data-price="0">Recoger en el Local ($0)</option>
                         <option value="las-vegas" data-price="6000">Las vegas - $6.000</option>
                         <option value="el-portal" data-price="6000">El portal - $6.000</option>

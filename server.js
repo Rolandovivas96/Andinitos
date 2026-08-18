@@ -30,7 +30,7 @@ const FORBIDDEN_PATHS = [
 const ALLOWED_EXTENSIONS = new Set(Object.keys(MIME_TYPES));
 
 function applySecurityHeaders(res) {
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.whatsapp.com https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';");
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.whatsapp.com https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebase.googleapis.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';");
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Referrer-Policy', 'no-referrer');
@@ -132,8 +132,8 @@ const server = http.createServer((req, res) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Servidor local de Andinitos corriendo en http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor local de Andinitos corriendo en http://0.0.0.0:${PORT}`);
     console.log('Credenciales del admin (cambiar en entorno real con ADMIN_USERNAME y ADMIN_PASSWORD):');
     console.log(`Usuario: ${ADMIN_USERNAME}`);
     console.log(`Contraseña: ${ADMIN_PASSWORD}`);

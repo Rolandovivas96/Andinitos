@@ -826,7 +826,9 @@ img {
     right: -420px;
     width: 100%;
     max-width: 420px;
+    /* dvh = dynamic viewport height (considera barra del navegador móvil) */
     height: 100vh;
+    height: 100dvh;
     background: var(--white);
     z-index: 1100;
     box-shadow: var(--shadow-lg);
@@ -834,6 +836,8 @@ img {
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--outline);
+    /* Evitar que el teclado virtual desplace el sidebar */
+    overflow: hidden;
 }
 
 .cart-sidebar.open {
@@ -841,11 +845,14 @@ img {
 }
 
 .cart-header {
-    padding: 24px;
+    flex-shrink: 0;  /* El header nunca se encoge */
+    padding: 20px 24px;
     border-bottom: 1px solid var(--outline);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: var(--white);
+    z-index: 2;
 }
 
 .cart-title {
@@ -854,15 +861,19 @@ img {
 }
 
 .cart-close-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: var(--surface-variant);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 20px;
     color: var(--primary);
     transition: var(--transition);
+    /* Área táctil más grande en móvil */
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .cart-close-btn:hover {
@@ -870,23 +881,28 @@ img {
     color: var(--white);
 }
 
+/* CRÍTICO: cart-items ocupa TODO el espacio disponible y tiene scroll propio */
 .cart-items {
-    flex-grow: 1;
+    flex: 1 1 0;     /* Crece para ocupar espacio, puede encogerse */
+    min-height: 0;   /* ESENCIAL para que flex + overflow-y funcione en iOS/Android */
     overflow-y: auto;
-    padding: 24px;
+    -webkit-overflow-scrolling: touch;  /* Scroll suave en iOS */
+    overscroll-behavior: contain;       /* Evita scroll de la página detrás */
+    padding: 16px 20px;
 }
 
 .cart-item {
     display: flex;
-    gap: 16px;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    gap: 14px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
     border-bottom: 1px solid var(--outline);
 }
 
 .cart-item-img {
-    width: 70px;
-    height: 70px;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
     object-fit: cover;
     border-radius: var(--radius-sm);
     background: var(--surface-variant);
@@ -894,12 +910,16 @@ img {
 
 .cart-item-details {
     flex-grow: 1;
+    min-width: 0;  /* Evita overflow de texto */
 }
 
 .cart-item-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .cart-item-price {
@@ -912,20 +932,32 @@ img {
 .cart-item-qty-control {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .qty-btn {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: var(--surface-container);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     transition: var(--transition);
+    /* Área táctil mínima de 44px recomendada por Apple/Google */
+    position: relative;
+}
+
+.qty-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
 }
 
 .qty-btn:hover {
@@ -934,27 +966,41 @@ img {
 }
 
 .qty-val {
-    font-size: 14px;
-    font-weight: 600;
-    min-width: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    min-width: 20px;
     text-align: center;
 }
 
 .cart-item-remove {
     align-self: flex-start;
     color: var(--on-surface-variant);
-    font-size: 18px;
+    font-size: 20px;
     transition: var(--transition);
+    padding: 2px 4px;
+    /* Área táctil grande */
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cart-item-remove:hover {
     color: var(--error);
 }
 
+/* CRÍTICO: cart-summary NUNCA se esconde - siempre visible al fondo */
 .cart-summary {
-    padding: 24px;
+    flex-shrink: 0;  /* Nunca se encoge - siempre visible */
+    padding: 16px 20px;
     background: var(--surface-variant);
-    border-top: 1px solid var(--outline);
+    border-top: 2px solid var(--outline);
+    /* Scroll interno si el form es muy largo en pantallas muy pequeñas */
+    overflow-y: auto;
+    max-height: 65vh;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 }
 
 .summary-row {
@@ -1009,7 +1055,15 @@ img {
 
 .btn-checkout {
     width: 100%;
-    margin-top: 8px;
+    margin-top: 10px;
+    /* Altura mínima para fácil toque en móvil */
+    min-height: 52px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border-radius: var(--radius-md);
+    /* Sombra prominente para que se vea como CTA principal */
+    box-shadow: 0 4px 16px rgba(200, 93, 43, 0.40);
 }
 
 /* Cart Overlay */
@@ -1085,9 +1139,16 @@ img {
     .cart-sidebar {
         max-width: 100%;
         right: -100%;
+        /* Altura dinámica para móvil incluyendo barra del nav */
+        height: 100vh;
+        height: 100dvh;
     }
     .cart-sidebar.open {
         transform: translateX(-100%);
+    }
+    .cart-summary {
+        /* En tablet: max-height menor para que quepa el formulario */
+        max-height: 60vh;
     }
     /* Productos en 2 columnas en móvil */
     .products-grid {
@@ -1278,6 +1339,9 @@ img {
         width: 100vw;
         max-width: 100vw;
         right: -100vw;
+        /* dvh: altura real sin la barra URL del navegador móvil */
+        height: 100vh;
+        height: 100dvh;
     }
 
     .cart-sidebar.open {
@@ -1292,16 +1356,38 @@ img {
         font-size: 20px !important;
     }
 
-    .cart-body {
-        padding: 14px 12px 90px;
+    .cart-items {
+        padding: 12px 14px;
     }
 
+    .cart-item {
+        gap: 12px;
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+    }
+
+    .cart-item-img {
+        width: 56px;
+        height: 56px;
+    }
+
+    /* En móvil pequeño, el summary puede ser hasta 70% del alto */
     .cart-summary {
-        padding: 10px 12px 12px;
+        padding: 12px 14px 14px;
+        max-height: 70vh;
+    }
+
+    .summary-row {
+        margin-bottom: 8px;
+    }
+
+    .btn-checkout {
+        min-height: 54px;
+        font-size: 16px;
     }
 
     .checkout-submit {
-        min-height: 46px;
+        min-height: 54px;
         font-size: 15px;
     }
 
@@ -1902,4 +1988,369 @@ img {
     font-size: 13px;
     font-weight: 700;
     color: var(--secondary);
+}
+
+/* ==========================================================================
+   ✨ VISUAL POLISH — Micro-animaciones, sombras y detalles premium
+   ========================================================================== */
+
+/* ── Animación de entrada para tarjetas de producto ── */
+@keyframes cardFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card {
+    animation: cardFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Retrasos escalonados para sensación de aparición natural */
+.products-grid .product-card:nth-child(1)  { animation-delay: 0.02s; }
+.products-grid .product-card:nth-child(2)  { animation-delay: 0.06s; }
+.products-grid .product-card:nth-child(3)  { animation-delay: 0.10s; }
+.products-grid .product-card:nth-child(4)  { animation-delay: 0.14s; }
+.products-grid .product-card:nth-child(5)  { animation-delay: 0.18s; }
+.products-grid .product-card:nth-child(6)  { animation-delay: 0.22s; }
+.products-grid .product-card:nth-child(n+7) { animation-delay: 0.26s; }
+
+/* ── Tarjeta de producto más refinada ── */
+.product-card {
+    border-radius: 14px;
+    box-shadow:
+        0 1px 3px rgba(42, 18, 5, 0.06),
+        0 4px 12px rgba(42, 18, 5, 0.07);
+    transition:
+        transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+        border-top-color 0.25s ease;
+    will-change: transform;
+}
+
+.product-card:hover {
+    transform: translateY(-7px) scale(1.01);
+    box-shadow:
+        0 6px 20px rgba(42, 18, 5, 0.10),
+        0 16px 40px rgba(42, 18, 5, 0.10);
+    border-top-color: var(--accent);
+}
+
+/* ── Imagen del producto: zoom más suave y elegante ── */
+.product-img-wrapper {
+    overflow: hidden;
+}
+
+.product-img {
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.07);
+}
+
+/* ── Overlay sutil al hacer hover en la imagen ── */
+.product-img-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(42, 18, 5, 0.12) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+.product-card:hover .product-img-wrapper::after {
+    opacity: 1;
+}
+
+/* ── Precio: efecto de subrayado dorado al hover ── */
+.product-price {
+    position: relative;
+    display: inline-block;
+    transition: color 0.25s ease;
+}
+
+/* ── Botón "Agregar" más pulido ── */
+.btn-add-card {
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 11.5px;
+    font-weight: 800;
+    position: relative;
+    overflow: hidden;
+    transition:
+        background-color 0.28s ease,
+        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.28s ease;
+}
+
+/* Efecto ripple en el botón agregar */
+.btn-add-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.btn-add-card:active::before {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+}
+
+.btn-add-card:hover {
+    background-color: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 14px rgba(200, 93, 43, 0.35),
+        0 0 0 2px rgba(200, 93, 43, 0.12);
+}
+
+/* ── Acordeón: sombra más profunda al abrir ── */
+.category-accordion.open {
+    box-shadow:
+        0 4px 16px rgba(42, 18, 5, 0.10),
+        0 10px 32px rgba(42, 18, 5, 0.08);
+    border-left-color: var(--accent);
+}
+
+.category-accordion.open .accordion-header {
+    background: linear-gradient(
+        to right,
+        rgba(212, 150, 10, 0.07) 0%,
+        var(--surface-variant) 100%
+    );
+}
+
+/* ── Header del acordeón: línea dorada decorativa ── */
+.accordion-title {
+    transition: color 0.25s ease;
+}
+
+.accordion-header:hover .accordion-title {
+    color: var(--secondary-dark);
+}
+
+/* ── Contador de cantidad en tarjeta ── */
+.card-qty-btn {
+    border-radius: 6px;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.card-qty-btn:active {
+    transform: scale(0.9);
+}
+
+/* ── Carrito lateral: borde y fondo más premium ── */
+.cart-sidebar {
+    border-left: 4px solid var(--secondary) !important;
+    box-shadow:
+        -8px 0 32px rgba(42, 18, 5, 0.18),
+        -2px 0 8px rgba(42, 18, 5, 0.10) !important;
+}
+
+/* ── Items del carrito: efecto hover ── */
+.cart-item {
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+    background: var(--surface-variant);
+    border: 1px solid transparent;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.cart-item:hover {
+    border-color: var(--outline-variant);
+    background: var(--surface-container);
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* ── Imagen del carrito más redondeada ── */
+.cart-item-img {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(42, 18, 5, 0.10);
+}
+
+/* ── Botones de cantidad en carrito ── */
+.qty-btn {
+    border-radius: 6px;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.qty-btn:active {
+    transform: scale(0.88);
+}
+
+/* ── Total del carrito: línea separadora animada ── */
+.summary-total {
+    position: relative;
+    padding-top: 14px;
+    margin-top: 10px;
+}
+
+.summary-total::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--secondary), var(--accent), transparent);
+    border-radius: 2px;
+}
+
+/* ── Formulario de checkout: inputs con foco más premium ── */
+.form-input {
+    border-radius: 10px;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+}
+
+.form-input:focus {
+    background: var(--white) !important;
+    border-color: var(--secondary) !important;
+    box-shadow:
+        0 0 0 3px rgba(200, 93, 43, 0.12),
+        0 2px 8px rgba(200, 93, 43, 0.08) !important;
+}
+
+/* ── Botón WhatsApp checkout: animación pulsante sutil ── */
+@keyframes subtlePulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(200, 93, 43, 0.30); }
+    50%       { box-shadow: 0 6px 24px rgba(200, 93, 43, 0.50); }
+}
+
+.btn-checkout {
+    border-radius: 12px !important;
+    animation: subtlePulse 2.5s ease-in-out infinite;
+    font-size: 13px !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ── Footer links: hover más elegante ── */
+.footer-links a {
+    position: relative;
+    padding-left: 0;
+    transition: color 0.22s ease, padding-left 0.22s ease;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+    padding-left: 6px;
+}
+
+/* ── Header logo: brillo sutil al hover ── */
+.logo-img {
+    transition:
+        transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.35s ease;
+}
+
+.logo-wrapper:hover .logo-img {
+    transform: rotate(-4deg) scale(1.08);
+    box-shadow: 0 0 0 3px rgba(212, 150, 10, 0.35);
+}
+
+/* ── Botón de carrito en header ── */
+.cart-toggle {
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.25s ease;
+}
+
+.cart-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 4px rgba(212, 150, 10, 0.20);
+}
+
+/* ── Sección de horario: sombra interna mejorada ── */
+.hours-section > .container > div {
+    box-shadow:
+        0 2px 8px rgba(42, 18, 5, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ── Selector de zonas: destacar opción "Fuera de Envigado" ── */
+#form-zone option[value="fuera-envigado"] {
+    font-weight: 700;
+    color: var(--secondary);
+}
+
+/* ── Animación de apertura del modal de combos ── */
+.combo-modal-content {
+    border-radius: 18px !important;
+}
+
+.combo-modal.open .combo-modal-content {
+    animation: cardFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Radio cards en modal de jugo: hover más claro ── */
+.jugo-radio-inner:hover {
+    background: var(--surface-container);
+    border-color: var(--outline-variant);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 18, 5, 0.08);
+}
+
+/* ── Scroll del carrito más suave ── */
+.cart-items {
+    scrollbar-width: thin;
+    scrollbar-color: var(--outline-variant) transparent;
+}
+
+.cart-items::-webkit-scrollbar {
+    width: 4px;
+}
+
+.cart-items::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 4px;
+}
+
+/* ── Título de sección con mayor presencia ── */
+.section-title {
+    letter-spacing: -0.3px;
+}
+
+.section-title::after {
+    background: linear-gradient(90deg, var(--secondary) 0%, var(--accent) 60%, transparent 100%);
+    height: 3px;
+    width: 70%;
 }
