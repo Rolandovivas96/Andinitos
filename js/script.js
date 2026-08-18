@@ -4,6 +4,7 @@
  * ==========================================================================
  */
 
+// Base de Datos de Productos
 // Orden oficial de categorías (garantiza el orden correcto incluso con Firebase)
 const CATEGORY_ORDER = ['pasteles', 'pasteles_al_barril', 'bebidas', 'jugos_naturales', 'malteadas', 'combos'];
 
@@ -133,50 +134,6 @@ let menuDatabase = {
             image: "images/MALTEADA DE TODDY.jpeg"
         }
     ],
-    malteadas: [
-        {
-            id: "M1",
-            name: "Malteada de Cocosette",
-            price: 14000,
-            desc: "Cremosa malteada preparada con galleta Cocosette original y coco rallado.",
-            image: "images/MALETADA DE COCOSSETTE.png"
-        },
-        {
-            id: "M2",
-            name: "Malteada de Arequipe",
-            price: 13000,
-            desc: "Deliciosa combinación de helado premium y arequipe tradicional colombiano.",
-            image: "images/MALTEADA DE AREQUIPE.png"
-        },
-        {
-            id: "M3",
-            name: "Malteada de Frutos Rojos",
-            price: 13500,
-            desc: "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.",
-            image: "images/MALTEADA DE FRUTOS ROJOS.png"
-        },
-        {
-            id: "M4",
-            name: "Malteada de Milo",
-            price: 12500,
-            desc: "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.",
-            image: "images/MALTEADA DE MILO.jpeg"
-        },
-        {
-            id: "M5",
-            name: "Malteada de Oreo",
-            price: 13500,
-            desc: "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.",
-            image: "images/MALTEADA DE OREO.png"
-        },
-        {
-            id: "M6",
-            name: "Malteada de Toddy",
-            price: 13000,
-            desc: "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.",
-            image: "images/MALTEADA DE TODDY.jpeg"
-        }
-    ],
     jugos_naturales: [
         {
             id: "J1",
@@ -240,6 +197,50 @@ let menuDatabase = {
             priceLeche: 11000,
             desc: "Mango fresco del trópico colombiano, dulce y con cuerpo cremoso.",
             image: "images/logo.png"
+        }
+    ],
+    malteadas: [
+        {
+            id: "M1",
+            name: "Malteada de Cocosette",
+            price: 14000,
+            desc: "Cremosa malteada preparada con galleta Cocosette original y coco rallado.",
+            image: "images/MALETADA DE COCOSSETTE.png"
+        },
+        {
+            id: "M2",
+            name: "Malteada de Arequipe",
+            price: 13000,
+            desc: "Deliciosa combinación de helado premium y arequipe tradicional colombiano.",
+            image: "images/MALTEADA DE AREQUIPE.png"
+        },
+        {
+            id: "M3",
+            name: "Malteada de Frutos Rojos",
+            price: 13500,
+            desc: "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.",
+            image: "images/MALTEADA DE FRUTOS ROJOS.png"
+        },
+        {
+            id: "M4",
+            name: "Malteada de Milo",
+            price: 12500,
+            desc: "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.",
+            image: "images/MALTEADA DE MILO.jpeg"
+        },
+        {
+            id: "M5",
+            name: "Malteada de Oreo",
+            price: 13500,
+            desc: "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.",
+            image: "images/MALTEADA DE OREO.png"
+        },
+        {
+            id: "M6",
+            name: "Malteada de Toddy",
+            price: 13000,
+            desc: "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.",
+            image: "images/MALTEADA DE TODDY.jpeg"
         }
     ],
     combos: [
@@ -329,6 +330,44 @@ function initDatabase() {
     }
 }
 
+// Default fallback para bebidas
+const DEFAULT_BEBIDAS = [
+    {
+        id: "B1",
+        name: "Milo de 16oz",
+        price: 11000,
+        desc: "Refrescante y fría bebida achocolatada Milo de 16oz.",
+        image: "images/MALTEADA DE MILO.jpeg",
+        available: true
+    },
+    {
+        id: "B2",
+        name: "Toddy de 16oz",
+        price: 11000,
+        desc: "Refrescante y fría bebida achocolatada Toddy de 16oz.",
+        image: "images/MALTEADA DE TODDY.jpeg",
+        available: true
+    }
+];
+
+// Garantizar que la categoría bebidas exista y contenga productos
+function ensureBebidasExist(dbObj) {
+    if (!dbObj || typeof dbObj !== 'object') return false;
+    const catData = dbObj.bebidas;
+    let list = [];
+    if (Array.isArray(catData)) {
+        list = catData;
+    } else if (catData && typeof catData === 'object') {
+        list = Object.values(catData).filter(v => v && typeof v === 'object');
+    }
+    if (list.length === 0) {
+        dbObj.bebidas = DEFAULT_BEBIDAS;
+        return true;
+    }
+    dbObj.bebidas = list;
+    return false;
+}
+
 // Sincronizar catálogo con origen local o Firebase
 function syncProductsDatabase() {
     if (isFirebaseConnected && db) {
@@ -336,6 +375,12 @@ function syncProductsDatabase() {
             const data = snapshot.val();
             if (data) {
                 menuDatabase = data;
+                const wasFixed = ensureBebidasExist(menuDatabase);
+                if (wasFixed) {
+                    db.ref("products/bebidas").set(DEFAULT_BEBIDAS);
+                }
+            } else {
+                ensureBebidasExist(menuDatabase);
             }
             renderProducts();
         });
@@ -345,8 +390,6 @@ function syncProductsDatabase() {
         if (localData) {
             try {
                 const parsed = JSON.parse(localData);
-                // Fusionar: usar localStorage solo para categorías con datos válidos
-                // Las categorías vacías o faltantes mantienen el default hardcodeado
                 Object.keys(menuDatabase).forEach(catKey => {
                     const localCat = parsed[catKey];
                     const isValidArray = Array.isArray(localCat) && localCat.length > 0;
@@ -355,14 +398,17 @@ function syncProductsDatabase() {
                     if (isValidArray || isValidObj) {
                         menuDatabase[catKey] = localCat;
                     }
-                    // Si está vacío o ausente, conservar el default (ej: jugos)
                 });
-                // Persistir el resultado fusionado para la próxima carga
+                ensureBebidasExist(menuDatabase);
                 localStorage.setItem("andinitos_products", JSON.stringify(menuDatabase));
             } catch (e) {
                 console.warn("AndinitosDB: Error al parsear localStorage, usando base de datos por defecto.");
                 localStorage.removeItem("andinitos_products");
+                ensureBebidasExist(menuDatabase);
             }
+        } else {
+            ensureBebidasExist(menuDatabase);
+            localStorage.setItem("andinitos_products", JSON.stringify(menuDatabase));
         }
         renderProducts();
     }
@@ -592,7 +638,7 @@ function renderProducts() {
 
     let anyRendered = false;
 
-    Object.keys(menuDatabase).forEach((catKey, index) => {
+    CATEGORY_ORDER.forEach((catKey, index) => {
         const products = toArray(menuDatabase[catKey]);
         if (products.length === 0) return;
 
@@ -1252,7 +1298,7 @@ function setupEventListeners() {
                 return;
             }
 
-            if (!address && zoneValue !== "recoger") {
+            if (!address && zoneValue !== "recoger" && zoneValue !== "fuera-envigado") {
                 alert("Por favor ingresa la dirección completa.");
                 return;
             }

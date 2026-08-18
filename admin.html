@@ -9,132 +9,206 @@
     <!-- Admin Styles -->
     <link rel="stylesheet" href="css/admin.css">
 </head>
-<body>
+<body class="admin-body">
 
-    <!-- Header -->
-    <header>
-        <div class="logo-admin">
-            <img src="images/logo.png" alt="Andinitos Logo" onerror="this.src='images/logo.png'">
-            <h1 class="logo-title">Andinitos<span>.</span></h1>
-            <span class="logo-badge">Consola</span>
+    <!-- Top Admin Header Bar (Rappi Partner Style) -->
+    <header class="admin-header">
+        <div class="header-left">
+            <div class="logo-admin">
+                <img src="images/logo.png" alt="Andinitos Logo" onerror="this.src='images/logo.png'">
+                <div class="logo-text">
+                    <h1 class="logo-title">Andinitos<span>.</span></h1>
+                    <span class="logo-subtitle">Portal de Aliados / Administración</span>
+                </div>
+            </div>
         </div>
 
-        <div class="store-control">
-            <button class="sound-toggle" id="sound-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-                Sonido Activo
+        <div class="header-right">
+            <button class="sound-toggle" id="sound-btn" title="Activar/Silenciar Alarma de Pedidos">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                <span>Sonido Activo</span>
             </button>
             
-            <div class="status-indicator">
+            <div class="status-indicator-pill" id="status-pill">
                 <div class="indicator-dot" id="store-status-dot"></div>
-                <span id="store-status-text">Cargando estado...</span>
+                <span id="store-status-text">Cargando...</span>
             </div>
             
-            <label class="switch">
+            <label class="switch-toggle" title="Abrir o Cerrar la Tienda">
                 <input type="checkbox" id="store-status-toggle" checked>
-                <span class="slider"></span>
+                <span class="slider-round"></span>
             </label>
         </div>
     </header>
 
-    <section class="store-schedule-panel">
-        <div class="store-schedule-header">
-            <h2>⚙️ Control de la tienda</h2>
+    <!-- Main Navigation Bar -->
+    <nav class="admin-nav-bar">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="pedidos" onclick="switchAdminTab('pedidos')">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">Tablero de Pedidos</span>
+                <span class="nav-badge" id="nav-badge-total">0</span>
+            </button>
+            <button class="nav-tab" data-tab="catalogo" onclick="switchAdminTab('catalogo')">
+                <span class="nav-icon">📦</span>
+                <span class="nav-label">Catálogo de Productos</span>
+            </button>
+            <button class="nav-tab" data-tab="horarios" onclick="switchAdminTab('horarios')">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Horarios y Tienda</span>
+            </button>
         </div>
-        <div class="store-schedule-grid">
-            <div class="store-setting-card">
-                <label class="setting-label" for="store-hours-force">Forzar horario manual</label>
-                <label class="admin-switch">
-                    <input type="checkbox" id="store-hours-force">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="store-setting-card">
-                <label class="setting-label" for="store-open-time">Hora de apertura</label>
-                <input type="time" id="store-open-time" class="admin-time-input" value="07:00">
-            </div>
-            <div class="store-setting-card">
-                <label class="setting-label" for="store-close-time">Hora de cierre</label>
-                <input type="time" id="store-close-time" class="admin-time-input" value="20:00">
-            </div>
-        </div>
-    </section>
+    </nav>
 
     <!-- Main Console Container -->
     <main class="dashboard-container">
         
-        <!-- Metrics Row -->
+        <!-- Metrics Row (Always Visible Summary) -->
         <section class="metrics-row">
-            <div class="metric-card">
-                <span class="metric-label">💰 Ventas Hoy (Completadas)</span>
-                <span class="metric-value" id="val-ventas">$0</span>
+            <div class="metric-card metric-sales">
+                <div class="metric-icon">💰</div>
+                <div class="metric-info">
+                    <span class="metric-label">Ventas del Día</span>
+                    <span class="metric-value" id="val-ventas">$0</span>
+                </div>
             </div>
-            <div class="metric-card">
-                <span class="metric-label">🔔 Pedidos Nuevos</span>
-                <span class="metric-value" id="val-pendientes">0</span>
+            <div class="metric-card metric-new">
+                <div class="metric-icon">📥</div>
+                <div class="metric-info">
+                    <span class="metric-label">Nuevos Pedidos</span>
+                    <span class="metric-value" id="val-pendientes">0</span>
+                </div>
             </div>
-            <div class="metric-card">
-                <span class="metric-label">⏳ En Proceso / En Ruta</span>
-                <span class="metric-value" id="val-progreso">0</span>
+            <div class="metric-card metric-progress">
+                <div class="metric-icon">👩‍🍳</div>
+                <div class="metric-info">
+                    <span class="metric-label">En Preparación / Ruta</span>
+                    <span class="metric-value" id="val-progreso">0</span>
+                </div>
+            </div>
+            <div class="metric-card metric-completed">
+                <div class="metric-icon">✅</div>
+                <div class="metric-info">
+                    <span class="metric-label">Despachados / Entregados</span>
+                    <span class="metric-value" id="val-completados">0</span>
+                </div>
             </div>
         </section>
 
-        <!-- Columns for Order Status -->
-        <section class="orders-columns">
-            
-            <!-- Column 1: Pendientes -->
-            <div class="column">
-                <div class="column-header">
-                    <h2 class="column-title">
-                        <span>📥</span> Pedidos Nuevos
-                    </h2>
-                    <span class="column-badge" id="badge-pendientes">0</span>
+        <!-- TAB 1: PEDIDOS EN VIVO Y DESPACHADOS -->
+        <section id="tab-pedidos" class="admin-tab-content active">
+            <!-- Columns for Order Status (4 columns including Despachados / Completados) -->
+            <div class="orders-columns">
+                
+                <!-- Column 1: Pendientes -->
+                <div class="column column-pending">
+                    <div class="column-header">
+                        <h2 class="column-title">
+                            <span>📥</span> Pedidos Nuevos
+                        </h2>
+                        <span class="column-badge badge-pending" id="badge-pendientes">0</span>
+                    </div>
+                    <div class="orders-list" id="list-pendientes">
+                        <div class="empty-column-state">No hay pedidos pendientes.</div>
+                    </div>
                 </div>
-                <div class="orders-list" id="list-pendientes">
-                    <!-- Dynamic orders injected here -->
-                    <div class="empty-column-state">Cargando pedidos...</div>
-                </div>
-            </div>
 
-            <!-- Column 2: Preparándose -->
-            <div class="column">
-                <div class="column-header">
-                    <h2 class="column-title">
-                        <span>👩‍🍳</span> En Preparación
-                    </h2>
-                    <span class="column-badge" id="badge-preparando">0</span>
+                <!-- Column 2: En Preparación -->
+                <div class="column column-preparing">
+                    <div class="column-header">
+                        <h2 class="column-title">
+                            <span>👩‍🍳</span> En Preparación
+                        </h2>
+                        <span class="column-badge badge-preparing" id="badge-preparando">0</span>
+                    </div>
+                    <div class="orders-list" id="list-preparando">
+                        <div class="empty-column-state">No hay pedidos preparándose.</div>
+                    </div>
                 </div>
-                <div class="orders-list" id="list-preparando">
-                    <!-- Dynamic orders injected here -->
-                    <div class="empty-column-state">Cargando pedidos...</div>
-                </div>
-            </div>
 
-            <!-- Column 3: Domicilio / Para Recoger -->
-            <div class="column">
-                <div class="column-header">
-                    <h2 class="column-title">
-                        <span>🛵</span> Listo / En Ruta
-                    </h2>
-                    <span class="column-badge" id="badge-despachados">0</span>
+                <!-- Column 3: Listo / En Ruta -->
+                <div class="column column-shipping">
+                    <div class="column-header">
+                        <h2 class="column-title">
+                            <span>🛵</span> Listo / En Ruta
+                        </h2>
+                        <span class="column-badge badge-shipping" id="badge-despachados">0</span>
+                    </div>
+                    <div class="orders-list" id="list-despachados">
+                        <div class="empty-column-state">No hay pedidos en ruta.</div>
+                    </div>
                 </div>
-                <div class="orders-list" id="list-despachados">
-                    <!-- Dynamic orders injected here -->
-                    <div class="empty-column-state">Cargando pedidos...</div>
-                </div>
-            </div>
 
+                <!-- Column 4: Despachados / Entregados -->
+                <div class="column column-completed">
+                    <div class="column-header">
+                        <h2 class="column-title">
+                            <span>✅</span> Despachados / Entregados
+                        </h2>
+                        <span class="column-badge badge-completed" id="badge-completados">0</span>
+                    </div>
+                    <div class="orders-list" id="list-completados">
+                        <div class="empty-column-state">No hay pedidos completados aún.</div>
+                    </div>
+                </div>
+
+            </div>
         </section>
 
-        <!-- Product Inventory Section -->
-        <section class="inventory-section">
-            <h2 style="font-family: var(--font-serif); font-size: 24px; font-weight: 700; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid rgba(42, 29, 23, 0.08); color: var(--primary);">
-                📦 Gestión de Catálogo de Productos
-            </h2>
-            <div id="admin-products-container">
-                <p style="text-align: center; color: var(--text-muted);">Cargando catálogo...</p>
+        <!-- TAB 2: GESTIÓN DE CATÁLOGO Y PRODUCTOS -->
+        <section id="tab-catalogo" class="admin-tab-content">
+            <div class="catalog-panel">
+                <div class="catalog-header-bar">
+                    <div class="catalog-title-wrapper">
+                        <h2>📦 Catálogo de Productos</h2>
+                        <p>Selecciona una categoría o busca por nombre para editar precio, imagen y disponibilidad.</p>
+                    </div>
+
+                    <div class="catalog-search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="admin-search-input" class="admin-search-input" placeholder="Buscar por nombre o ID..." oninput="handleAdminSearch(this.value)">
+                    </div>
+                </div>
+
+                <!-- Category Pills Bar (Filter like main menu) -->
+                <div class="admin-category-pills" id="admin-category-pills">
+                    <!-- Dynamic Pills rendered by admin.js -->
+                </div>
+
+                <!-- Products Container -->
+                <div id="admin-products-container" class="admin-products-container">
+                    <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Cargando catálogo...</p>
+                </div>
             </div>
         </section>
+
+        <!-- TAB 3: HORARIOS Y CONFIGURACIÓN -->
+        <section id="tab-horarios" class="admin-tab-content">
+            <div class="store-schedule-panel">
+                <div class="store-schedule-header">
+                    <h2>⚙️ Control de Horarios y Disponibilidad</h2>
+                    <p>Configura la apertura automática o fuerza el estado manualmente.</p>
+                </div>
+                <div class="store-schedule-grid">
+                    <div class="store-setting-card">
+                        <label class="setting-label" for="store-hours-force">Forzar Horario Manual</label>
+                        <label class="admin-switch">
+                            <input type="checkbox" id="store-hours-force">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="store-setting-card">
+                        <label class="setting-label" for="store-open-time">Hora de Apertura</label>
+                        <input type="time" id="store-open-time" class="admin-time-input" value="07:00">
+                    </div>
+                    <div class="store-setting-card">
+                        <label class="setting-label" for="store-close-time">Hora de Cierre</label>
+                        <input type="time" id="store-close-time" class="admin-time-input" value="20:00">
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Firebase SDK (Compat v10) -->

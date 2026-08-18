@@ -158,50 +158,6 @@ let menuDatabase = {
             image: "images/MALTEADA DE TODDY.jpeg"
         }
     ],
-    malteadas: [
-        {
-            id: "M1",
-            name: "Malteada de Cocosette",
-            price: 14000,
-            desc: "Cremosa malteada preparada con galleta Cocosette original y coco rallado.",
-            image: "images/MALETADA DE COCOSSETTE.png"
-        },
-        {
-            id: "M2",
-            name: "Malteada de Arequipe",
-            price: 13000,
-            desc: "Deliciosa combinación de helado premium y arequipe tradicional colombiano.",
-            image: "images/MALTEADA DE AREQUIPE.png"
-        },
-        {
-            id: "M3",
-            name: "Malteada de Frutos Rojos",
-            price: 13500,
-            desc: "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.",
-            image: "images/MALTEADA DE FRUTOS ROJOS.png"
-        },
-        {
-            id: "M4",
-            name: "Malteada de Milo",
-            price: 12500,
-            desc: "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.",
-            image: "images/MALTEADA DE MILO.jpeg"
-        },
-        {
-            id: "M5",
-            name: "Malteada de Oreo",
-            price: 13500,
-            desc: "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.",
-            image: "images/MALTEADA DE OREO.png"
-        },
-        {
-            id: "M6",
-            name: "Malteada de Toddy",
-            price: 13000,
-            desc: "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.",
-            image: "images/MALTEADA DE TODDY.jpeg"
-        }
-    ],
     jugos_naturales: [
         {
             id: "J1",
@@ -267,6 +223,50 @@ let menuDatabase = {
             image: "images/JUGOS.png"
         }
     ],
+    malteadas: [
+        {
+            id: "M1",
+            name: "Malteada de Cocosette",
+            price: 14000,
+            desc: "Cremosa malteada preparada con galleta Cocosette original y coco rallado.",
+            image: "images/MALETADA DE COCOSSETTE.png"
+        },
+        {
+            id: "M2",
+            name: "Malteada de Arequipe",
+            price: 13000,
+            desc: "Deliciosa combinación de helado premium y arequipe tradicional colombiano.",
+            image: "images/MALTEADA DE AREQUIPE.png"
+        },
+        {
+            id: "M3",
+            name: "Malteada de Frutos Rojos",
+            price: 13500,
+            desc: "Refrescante y dulce malteada con salsa artesanal de fresas, moras y arándanos.",
+            image: "images/MALTEADA DE FRUTOS ROJOS.png"
+        },
+        {
+            id: "M4",
+            name: "Malteada de Milo",
+            price: 12500,
+            desc: "La favorita de la casa, con abundante Milo en polvo y helado de vainilla.",
+            image: "images/MALTEADA DE MILO.jpeg"
+        },
+        {
+            id: "M5",
+            name: "Malteada de Oreo",
+            price: 13500,
+            desc: "Cremosa malteada con trozos crocantes de galleta Oreo y salsa de chocolate.",
+            image: "images/MALTEADA DE OREO.png"
+        },
+        {
+            id: "M6",
+            name: "Malteada de Toddy",
+            price: 13000,
+            desc: "Exclusivo sabor andino preparado con auténtica bebida achocolatada Toddy.",
+            image: "images/MALTEADA DE TODDY.jpeg"
+        }
+    ],
     combos: [
         {
             id: "C1",
@@ -325,8 +325,14 @@ function initDatabase() {
                 const data = snapshot.val();
                 if (data) {
                     menuDatabase = data;
-                    renderAdminProducts();
+                    const wasFixed = ensureBebidasExistAdmin(menuDatabase);
+                    if (wasFixed) {
+                        db.ref("products/bebidas").set(DEFAULT_BEBIDAS_ADMIN);
+                    }
+                } else {
+                    ensureBebidasExistAdmin(menuDatabase);
                 }
+                renderAdminProducts();
             });
 
         } catch (error) {
@@ -339,6 +345,42 @@ function initDatabase() {
     }
 }
 
+const DEFAULT_BEBIDAS_ADMIN = [
+    {
+        id: "B1",
+        name: "Milo de 16oz",
+        price: 11000,
+        desc: "Refrescante y fría bebida achocolatada Milo de 16oz.",
+        image: "images/MALTEADA DE MILO.jpeg",
+        available: true
+    },
+    {
+        id: "B2",
+        name: "Toddy de 16oz",
+        price: 11000,
+        desc: "Refrescante y fría bebida achocolatada Toddy de 16oz.",
+        image: "images/MALTEADA DE TODDY.jpeg",
+        available: true
+    }
+];
+
+function ensureBebidasExistAdmin(dbObj) {
+    if (!dbObj || typeof dbObj !== 'object') return false;
+    const catData = dbObj.bebidas;
+    let list = [];
+    if (Array.isArray(catData)) {
+        list = catData;
+    } else if (catData && typeof catData === 'object') {
+        list = Object.values(catData).filter(v => v && typeof v === 'object');
+    }
+    if (list.length === 0) {
+        dbObj.bebidas = DEFAULT_BEBIDAS_ADMIN;
+        return true;
+    }
+    dbObj.bebidas = list;
+    return false;
+}
+
 // --------------------------------------------------------------------------
 // MOCK/LOCAL STORAGE FALLBACK (Para pruebas locales inmediatas)
 // --------------------------------------------------------------------------
@@ -349,8 +391,6 @@ function initMockMode() {
     if (localProducts) {
         try {
             const parsed = JSON.parse(localProducts);
-            // Fusionar: para cada categoría, usar localStorage solo si tiene datos válidos
-            // Si localStorage tiene una categoría vacía o en formato inválido, usar el default
             Object.keys(menuDatabase).forEach(catKey => {
                 const localCat = parsed[catKey];
                 const isValidArray = Array.isArray(localCat) && localCat.length > 0;
@@ -358,17 +398,16 @@ function initMockMode() {
                 if (isValidArray || isValidObj) {
                     menuDatabase[catKey] = localCat;
                 }
-                // Si está vacío o falta, mantener el default hardcodeado
             });
-            // Persistir el dato fusionado (con jugos incluidos)
+            ensureBebidasExistAdmin(menuDatabase);
             localStorage.setItem("andinitos_products", JSON.stringify(menuDatabase));
         } catch (e) {
-            // Error de parseo: usar default en memoria y limpiar
             localStorage.removeItem("andinitos_products");
+            ensureBebidasExistAdmin(menuDatabase);
             localStorage.setItem("andinitos_products", JSON.stringify(menuDatabase));
         }
     } else {
-        // Primera vez: guardar los datos por defecto incluyendo jugos
+        ensureBebidasExistAdmin(menuDatabase);
         localStorage.setItem("andinitos_products", JSON.stringify(menuDatabase));
     }
     renderAdminProducts();
@@ -897,16 +936,19 @@ function renderDashboard() {
     const listPendientes = document.getElementById("list-pendientes");
     const listPreparando = document.getElementById("list-preparando");
     const listDespachados = document.getElementById("list-despachados");
+    const listCompletados = document.getElementById("list-completados");
 
     // Limpiar listas
     if (listPendientes) listPendientes.innerHTML = "";
     if (listPreparando) listPreparando.innerHTML = "";
     if (listDespachados) listDespachados.innerHTML = "";
+    if (listCompletados) listCompletados.innerHTML = "";
 
     // Contadores
     let countPendientes = 0;
     let countPreparando = 0;
     let countDespachados = 0;
+    let countCompletados = 0;
     let totalSalesToday = 0;
 
     // Convertir órdenes en un array ordenado por tiempo desc
@@ -915,8 +957,8 @@ function renderDashboard() {
     orderList.forEach(order => {
         // Calcular ventas completadas hoy
         if (order.status === "completado") {
-            totalSalesToday += order.total;
-            return;
+            totalSalesToday += (order.total || 0);
+            countCompletados++;
         }
         if (order.status === "cancelado") {
             return;
@@ -927,16 +969,18 @@ function renderDashboard() {
         
         // Formatear items del pedido
         let itemsHtml = "";
-        order.items.forEach(item => {
-            itemsHtml += `<li><span>${item.quantity}x ${item.name} ${item.notes ? `(${item.notes})` : ""}</span></li>`;
-        });
+        if (order.items && Array.isArray(order.items)) {
+            order.items.forEach(item => {
+                itemsHtml += `<li><span>${item.quantity}x ${item.name} ${item.notes ? `(${item.notes})` : ""}</span></li>`;
+            });
+        }
 
         // Formatear precio total
         const totalFormatted = new Intl.NumberFormat('es-CO', {
             style: 'currency',
             currency: 'COP',
             minimumFractionDigits: 0
-        }).format(order.total);
+        }).format(order.total || 0);
 
         // Formatear fecha/hora
         const timeString = new Date(order.timestamp).toLocaleTimeString('es-CO', {
@@ -952,7 +996,7 @@ function renderDashboard() {
                 <button class="btn-action btn-cancel" onclick="updateOrderStatus('${order.id}', 'cancelado')">Rechazar</button>
             `;
         } else if (order.status === "preparando") {
-            const btnText = order.type === "domicilio" ? "Enviar" : "Listo para Entrega";
+            const btnText = order.type === "domicilio" ? "Enviar a Ruta" : "Listo para Entrega";
             actionButtons = `
                 <button class="btn-action btn-deliver" onclick="updateOrderStatus('${order.id}', 'despachado')">${btnText}</button>
                 <button class="btn-action btn-cancel" onclick="updateOrderStatus('${order.id}', 'cancelado')">Cancelar</button>
@@ -960,6 +1004,10 @@ function renderDashboard() {
         } else if (order.status === "despachado") {
             actionButtons = `
                 <button class="btn-action btn-complete" onclick="updateOrderStatus('${order.id}', 'completado')">Finalizar</button>
+            `;
+        } else if (order.status === "completado") {
+            actionButtons = `
+                <button class="btn-action btn-reopen" onclick="updateOrderStatus('${order.id}', 'despachado')">↩️ Reabrir</button>
             `;
         }
 
@@ -976,7 +1024,7 @@ function renderDashboard() {
                 <span class="order-id">#${order.id.slice(-6).toUpperCase()}</span>
                 <span class="order-time">${timeString}</span>
             </div>
-            <h3 class="order-client">${order.clientName}</h3>
+            <h3 class="order-client">${order.clientName || 'Cliente'}</h3>
             <div class="order-type">
                 ${order.type === 'domicilio' ? '🛵 Domicilio' : '🛍️ Recoger'} 
                 ${order.address ? `• ${order.address}` : ''}
@@ -997,14 +1045,16 @@ function renderDashboard() {
 
         // Ubicar en su columna respectiva
         if (order.status === "pendiente") {
-            listPendientes.appendChild(orderCard);
+            if (listPendientes) listPendientes.appendChild(orderCard);
             countPendientes++;
         } else if (order.status === "preparando") {
-            listPreparando.appendChild(orderCard);
+            if (listPreparando) listPreparando.appendChild(orderCard);
             countPreparando++;
         } else if (order.status === "despachado") {
-            listDespachados.appendChild(orderCard);
+            if (listDespachados) listDespachados.appendChild(orderCard);
             countDespachados++;
+        } else if (order.status === "completado") {
+            if (listCompletados) listCompletados.appendChild(orderCard);
         }
     });
 
@@ -1016,22 +1066,30 @@ function renderDashboard() {
         listPreparando.innerHTML = `<div class="empty-column-state">No hay pedidos preparándose.</div>`;
     }
     if (countDespachados === 0 && listDespachados) {
-        listDespachados.innerHTML = `<div class="empty-column-state">No hay pedidos listos/en ruta.</div>`;
+        listDespachados.innerHTML = `<div class="empty-column-state">No hay pedidos en ruta.</div>`;
+    }
+    if (countCompletados === 0 && listCompletados) {
+        listCompletados.innerHTML = `<div class="empty-column-state">No hay pedidos completados aún.</div>`;
     }
 
     // Actualizar insignias de cantidad en las cabeceras
     const badgePendientes = document.getElementById("badge-pendientes");
     const badgePreparando = document.getElementById("badge-preparando");
     const badgeDespachados = document.getElementById("badge-despachados");
+    const badgeCompletados = document.getElementById("badge-completados");
+    const navBadgeTotal = document.getElementById("nav-badge-total");
 
     if (badgePendientes) badgePendientes.innerText = countPendientes;
     if (badgePreparando) badgePreparando.innerText = countPreparando;
     if (badgeDespachados) badgeDespachados.innerText = countDespachados;
+    if (badgeCompletados) badgeCompletados.innerText = countCompletados;
+    if (navBadgeTotal) navBadgeTotal.innerText = countPendientes + countPreparando + countDespachados;
 
     // Actualizar métricas generales
     const valVentas = document.getElementById("val-ventas");
     const valPendientes = document.getElementById("val-pendientes");
     const valProgreso = document.getElementById("val-progreso");
+    const valCompletados = document.getElementById("val-completados");
 
     const totalSalesFormatted = new Intl.NumberFormat('es-CO', {
         style: 'currency',
@@ -1042,6 +1100,7 @@ function renderDashboard() {
     if (valVentas) valVentas.innerText = totalSalesFormatted;
     if (valPendientes) valPendientes.innerText = countPendientes;
     if (valProgreso) valProgreso.innerText = countPreparando + countDespachados;
+    if (valCompletados) valCompletados.innerText = countCompletados;
 }
 
 // Configurar escuchas del panel admin
@@ -1142,6 +1201,80 @@ function setupAdminListeners() {
     }
 }
 
+// Global Nav & Filter Controls
+let activeAdminCategory = "todos";
+let adminSearchQuery = "";
+
+window.switchAdminTab = function(tabId) {
+    document.querySelectorAll(".nav-tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".admin-tab-content").forEach(content => content.classList.remove("active"));
+
+    const activeNavTab = document.querySelector(`.nav-tab[data-tab="${tabId}"]`);
+    const activeContent = document.getElementById(`tab-${tabId}`);
+
+    if (activeNavTab) activeNavTab.classList.add("active");
+    if (activeContent) activeContent.classList.add("active");
+};
+
+window.setAdminCategoryFilter = function(catKey) {
+    activeAdminCategory = catKey;
+    renderAdminProducts();
+};
+
+window.handleAdminSearch = function(query) {
+    adminSearchQuery = (query || "").toLowerCase().trim();
+    renderAdminProducts();
+};
+
+// Íconos por categoría
+const categoryIconsMap = {
+    todos: "✨",
+    pasteles: "🥟",
+    pasteles_al_barril: "🔥",
+    bebidas: "🧃",
+    jugos_naturales: "🍓",
+    malteadas: "🥤",
+    combos: "🎉"
+};
+
+// Rendirizar píldoras de filtro por categoría
+function renderAdminCategoryPills() {
+    const container = document.getElementById("admin-category-pills");
+    if (!container) return;
+
+    let totalProducts = 0;
+    const categoryCounts = {};
+
+    CATEGORY_ORDER.forEach(catKey => {
+        const list = Array.isArray(menuDatabase[catKey]) ? menuDatabase[catKey] : [];
+        categoryCounts[catKey] = list.length;
+        totalProducts += list.length;
+    });
+
+    let pillsHtml = `
+        <button class="category-pill ${activeAdminCategory === 'todos' ? 'active' : ''}" onclick="setAdminCategoryFilter('todos')">
+            <span>✨ Todos</span>
+            <span class="pill-count">${totalProducts}</span>
+        </button>
+    `;
+
+    CATEGORY_ORDER.forEach(catKey => {
+        const icon = categoryIconsMap[catKey] || "📦";
+        const label = catKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+        const count = categoryCounts[catKey] || 0;
+        const isActive = activeAdminCategory === catKey;
+
+        pillsHtml += `
+            <button class="category-pill ${isActive ? 'active' : ''}" onclick="setAdminCategoryFilter('${catKey}')">
+                <span>${icon} ${label}</span>
+                <span class="pill-count">${count}</span>
+            </button>
+        `;
+    });
+
+    container.innerHTML = pillsHtml;
+}
+
 // Inicialización
 document.addEventListener("DOMContentLoaded", () => {
     initDatabase();
@@ -1153,17 +1286,39 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================================================
 
 function renderAdminProducts() {
+    renderAdminCategoryPills();
+
     const container = document.getElementById("admin-products-container");
     if (!container) return;
     container.innerHTML = "";
 
-    Object.keys(menuDatabase).forEach(catKey => {
+    const categoriesToRender = activeAdminCategory === "todos" 
+        ? CATEGORY_ORDER 
+        : CATEGORY_ORDER.filter(c => c === activeAdminCategory);
+
+    let totalRendered = 0;
+
+    categoriesToRender.forEach(catKey => {
+        const catIcon = categoryIconsMap[catKey] || "📦";
         const catLabel = catKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-        const products = Array.isArray(menuDatabase[catKey]) ? menuDatabase[catKey] : [];
+        let products = Array.isArray(menuDatabase[catKey]) ? menuDatabase[catKey] : [];
+
+        // Filtro por búsqueda
+        if (adminSearchQuery) {
+            products = products.filter(p => 
+                (p.name && p.name.toLowerCase().includes(adminSearchQuery)) ||
+                (p.desc && p.desc.toLowerCase().includes(adminSearchQuery)) ||
+                (p.id && p.id.toLowerCase().includes(adminSearchQuery))
+            );
+        }
+
+        if (products.length === 0) return;
+
+        totalRendered += products.length;
 
         const group = document.createElement("div");
         group.className = "admin-category-group";
-        group.innerHTML = `<h3 class="admin-category-title">${catLabel}</h3>`;
+        group.innerHTML = `<h3 class="admin-category-title">${catIcon} ${catLabel} (${products.length})</h3>`;
 
         const list = document.createElement("div");
         list.className = "admin-products-list";
@@ -1237,6 +1392,14 @@ function renderAdminProducts() {
         group.appendChild(list);
         container.appendChild(group);
     });
+
+    if (totalRendered === 0) {
+        container.innerHTML = `
+            <div class="empty-column-state" style="padding: 60px 20px;">
+                <p style="font-size: 15px; font-weight: 700; color: var(--text-muted);">No se encontraron productos en esta categoría o filtro de búsqueda.</p>
+            </div>
+        `;
+    }
 }
 
 // Redimensionar y comprimir una imagen a Base64 manteniendo mejor calidad visual
@@ -1358,3 +1521,4 @@ window.saveAdminProduct = function(productId, catKey) {
         }
     }
 };
+
