@@ -4,7 +4,9 @@
  * ==========================================================================
  */
 
-// Base de Datos de Productos
+// Orden oficial de categorías (garantiza el orden correcto incluso con Firebase)
+const CATEGORY_ORDER = ['pasteles', 'pasteles_al_barril', 'bebidas', 'jugos_naturales', 'malteadas', 'combos'];
+
 let menuDatabase = {
     pasteles: [
         {
@@ -113,6 +115,22 @@ let menuDatabase = {
             price: 11000,
             desc: "Suave pierna de cerdo ahumada al barril combinada con queso fundido.",
             image: "images/PIERNA DE CERDO AL BARRIL Y QUESO.png"
+        }
+    ],
+    bebidas: [
+        {
+            id: "B1",
+            name: "Milo de 16oz",
+            price: 11000,
+            desc: "Refrescante y fría bebida achocolatada Milo de 16oz.",
+            image: "images/MALTEADA DE MILO.jpeg"
+        },
+        {
+            id: "B2",
+            name: "Toddy de 16oz",
+            price: 11000,
+            desc: "Refrescante y fría bebida achocolatada Toddy de 16oz.",
+            image: "images/MALTEADA DE TODDY.jpeg"
         }
     ],
     malteadas: [
@@ -555,6 +573,7 @@ function renderProducts() {
     const categoryIcons = {
         pasteles: "🥟",
         pasteles_al_barril: "🔥",
+        bebidas: "🧃",
         malteadas: "🥤",
         jugos_naturales: "🍓",
         combos: "🎉"
